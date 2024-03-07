@@ -123,6 +123,9 @@ def main():
 
         # Path to the .sh with the command to install librairie on wsl
         wsl_path = "/mnt/" + full_bash_script_path[0].lower() + full_bash_script_path[2:].replace("\\", "/")
+        
+        bash_script_path_unix = full_bash_script_path.replace("\\", "/")
+        wsl_path = f'"/mnt/{bash_script_path_unix[0].lower()}{bash_script_path_unix[2:]}"'
             
         # Once WSL is initialized, execute the bash script (to install the librairies)
         subprocess.run(["wsl", "bash","-c", wsl_path])
