@@ -68,7 +68,7 @@ def main():
         subprocess.run([exe_path, kernel_path,temp_file_path])
     else:
         # Ask and launch secondaire.exe if not in admin
-        ctypes.windll.shell32.ShellExecuteW(None, "runas", exe_path, f"{kernel_path} {temp_file_path}", None, 1)
+        ctypes.windll.shell32.ShellExecuteW(None, "runas", exe_path, f"\"{kernel_path}\" \"{temp_file_path}\"", None, 1)
     
     # Attendre que l'utilisateur ferme manuellement le terminal admin ou que le script se termine
     

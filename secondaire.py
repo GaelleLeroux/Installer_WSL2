@@ -76,26 +76,34 @@ def write_output(file_path,message):
         file.write(message + '\n')  # Écrire le message suivi d'une nouvelle ligne
         
 def main(kernel_path,file_path):
-
     print_command("This windows will be close automatically, please wait")
 
     # Check is WSL activate in parameters of windows
     wsl_status = subprocess.run("dism.exe /online /get-featureinfo /featurename:Microsoft-Windows-Subsystem-Linux",
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True)
     
+    write_output(file_path,f"wsl_status : {wsl_status}")
+    
     virtual_machine_status = subprocess.run("dism.exe /online /get-featureinfo /featurename:VirtualMachinePlatform",
                                 stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True, shell=True)
+    
+    write_output(file_path,f"virtual_machine_status : {virtual_machine_status}")
 
     
     activate_wsl = False
     if "Enabled" not in wsl_status.stdout:
             # Activate WSL and virtual machine platform for wsl2
+            print("want to enable wsl")
+            write_output(file_path,"want to enable wsl")
             subprocess.run("dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart", shell=True)
+            print("Enabled wsl")
             # need to restart the computer
             activate_wsl = True
             write_output(file_path,"restart")
 
     if "Enabled" not in virtual_machine_status.stdout:
+            print("want to enable virtual machine")
+            write_output(file_path,"want to enable virtual machine")
             subprocess.run("dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart", shell=True)
             activate_wsl = True
             write_output(file_path,"restart")
@@ -109,7 +117,7 @@ def main(kernel_path,file_path):
                 install_wsl2_kernel(kernel_path)
                 test_kernel=True
             except:
-                write_output(file_path,"errorKernel")
+                write_output(file_path,"errorKernel")  
         
     if test_kernel==True:
         write_output(file_path,"ready")
@@ -118,4 +126,11 @@ def main(kernel_path,file_path):
         
         
 if __name__ == "__main__":
-    main(sys.argv[1],sys.argv[2])
+    if len(sys.argv) == 3:
+        main(sys.argv[1], sys.argv[2])
+    else:
+        print(f"Error this script need 2 arguments. You have {len(sys.argv)} arguments")
+        print(f"The arguments you enter are : \n{sys.argv}")
+        time.sleep(10)
+        
+        
